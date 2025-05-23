@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">videoAppOnAndroid</string>
+    <string name="title_activity_video_player">VideoPlayerActivity</string>
+    <string name="add_video_content_description">Thêm video mới hoặc quay video</string>
+    <string name="ten_video_rat_dai_co_the_bi_cat_bot_o_cuoi_dong">Tên Video Rất Dài Có Thể Bị Cắt Bớt Ở Cuối Dòng</string>
+    <string name="_00_00">00:00</string>
+    <string name="ng_y_t_o_22_05_2025">Ngày tạo: 22/05/2025</string>
+    <string name="day_l_thumnail_video">day là thumnail video</string>
+    <string name="tr_nh_ph_t_video">TRÌNH PHÁT VIDEO</string>
+    <string name="menu">Menu</string>
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+    <string name="ch_n_video_t_b_nh_trong">Chọn video từ bộ nhớ trong</string>
+    <string name="quay_video_m_i">Quay video mới</string>
+    <string name="th_m_video_m_i">Thêm Video Mới</string>
+    <string name="t_n_video">Tên video</string>
 </resources>
