@@ -1,127 +1,182 @@
 package com.example.videoapponandroid;
 
-import android.Manifest; // Import cho quyền truy cập bộ nhớ
+import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build; // Import để kiểm tra phiên bản Android
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout; // <-- Import LinearLayout
 import android.widget.TextView;
-import android.widget.Toast; // Import cho Toast
+import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
+import android.view.KeyEvent;
+import android.view.ViewGroup; // Import ViewGroup
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar; // Import đúng Toolbar
-import androidx.core.app.ActivityCompat; // Import cho ActivityCompat
-import androidx.core.content.ContextCompat; // Import cho ContextCompat
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SortOptionsBottomSheet.SortOptionListener {
 
-    private static final int PERMISSION_REQUEST_CODE = 100; // Mã yêu cầu quyền
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private ImageButton btnSearch;
+    private ImageButton btnBackFromSearch;
+    private EditText searchEditText;
+    private TextView toolbarTitle;
+    private LinearLayout rightButtonsContainer; // <-- Khai báo container cho các nút phải
+    private DemoPagerAdapter pagerAdapter;
+    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // THAMC CHIẾU TỚI FILE XML ACTIVITY_MAIN
+        setContentView(R.layout.activity_main);
 
-       // THAM CHIẾU TỚI TOOLBAR
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar); // ĐẶT LÀM ACTIVITY CHÍNH CỦA ACTIONBAR
+        setSupportActionBar(toolbar);
 
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle = findViewById(R.id.toolbar_title);
         ImageButton btnSort = findViewById(R.id.btn_sort);
-        ImageButton btnSearch = findViewById(R.id.btn_search);
+        btnSearch = findViewById(R.id.btn_search);
         ImageButton btnSettings = findViewById(R.id.btn_settings);
+        btnBackFromSearch = findViewById(R.id.btnBackFromSearch);
+        rightButtonsContainer = findViewById(R.id.right_buttons_container); // <-- Ánh xạ container
 
-        // Đặt lắng nghe sự kiện (OnClickListener) cho các nút trên Toolbar
-        btnSort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Nút Sắp xếp được nhấn!", Toast.LENGTH_SHORT).show();
-                // TODO: Thêm logic xử lý sắp xếp của bạn tại đây
+        // Khởi tạo EditText cho tìm kiếm
+        searchEditText = new EditText(this);
+        searchEditText.setLayoutParams(new Toolbar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, // Chiếm hết chiều rộng còn lại
+                ViewGroup.LayoutParams.WRAP_CONTENT // Chiều cao tự động
+        ));
+        searchEditText.setHint("Tìm kiếm video...");
+        searchEditText.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+        searchEditText.setHintTextColor(ContextCompat.getColor(this, android.R.color.darker_gray));
+        searchEditText.setSingleLine(true); // Đảm bảo chỉ trên một dòng
+
+        // Thêm searchEditText vào Toolbar (vị trí sau btnBackFromSearch, trước toolbar_title và rightButtonsContainer)
+        // Chúng ta sẽ quản lý vị trí bằng cách ẩn/hiện các views khác
+        toolbar.addView(searchEditText); // Thêm vào cuối Toolbar để dễ quản lý thứ tự hiển thị
+        searchEditText.setVisibility(View.GONE); // Ẩn ban đầu
+
+        // Để searchEditText chiếm đúng không gian khi hiển thị, chúng ta cần đặt nó trong code
+        // Nó sẽ được hiển thị khi toolbarTitle và rightButtonsContainer ẩn đi
+
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                performSearch(searchEditText.getText().toString());
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                }
+                return true;
             }
+            return false;
         });
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Nút Tìm kiếm được nhấn!", Toast.LENGTH_SHORT).show();
-                // TODO: Thêm logic xử lý tìm kiếm của bạn tại đây
-            }
-        });
+        btnSort.setOnClickListener(v -> showSortOptionsBottomSheet());
+        btnSearch.setOnClickListener(v -> toggleSearchBar());
+        btnSettings.setOnClickListener(v -> Toast.makeText(MainActivity.this, "Nút Cài đặt được nhấn!", Toast.LENGTH_SHORT).show());
+        btnBackFromSearch.setOnClickListener(v -> toggleSearchBar()); // Đóng thanh tìm kiếm khi nhấn nút quay lại
 
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Nút Cài đặt được nhấn!", Toast.LENGTH_SHORT).show();
-                // TODO: Thêm logic xử lý cài đặt của bạn tại đây
-            }
-        });
-
-        // THIẾT LẬP VIEWPAGER2 VÀ TABLAYOUT
-        ViewPager2 viewPager = findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        // Adapter này sẽ chứa và quản lý các Fragment (Trang Một, Trang Hai)
-        DemoPagerAdapter pagerAdapter = new DemoPagerAdapter(this); //khởi tạo ADEPTER
+        pagerAdapter = new DemoPagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
 
-        // 2. Liên kết TabLayout với ViewPager2 bằng TabLayoutMediator
-        // Điều này đảm bảo khi vuốt ViewPager2, tab sẽ thay đổi và ngược lại
         new TabLayoutMediator(tabLayout, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        // Đặt văn bản cho mỗi tab dựa trên tiêu đề từ Adapter
-                        tab.setText(pagerAdapter.getPageTitle(position));
-                    }
-                }
-        ).attach(); // Rất quan trọng: Gắn TabLayoutMediator để kích hoạt đồng bộ hóa
+                (tab, position) -> tab.setText(pagerAdapter.getPageTitle(position))
+        ).attach();
 
-        // KIỂM TRA VÀ YÊU CẦU QUYỀN ĐỌC BỘ NHỚ
         checkAndRequestPermissions();
     }
 
+    private void toggleSearchBar() {
+        if (searchEditText.getVisibility() == View.VISIBLE) {
+            // Đang hiển thị thanh tìm kiếm -> Ẩn đi
+            searchEditText.setVisibility(View.GONE);
+            btnBackFromSearch.setVisibility(View.GONE);
+            toolbarTitle.setVisibility(View.VISIBLE);
+            rightButtonsContainer.setVisibility(View.VISIBLE); // Hiển thị lại container nút bên phải
 
-     // Kiểm tra và yêu cầu quyền đọc bộ nhớ (READ_EXTERNAL_STORAGE hoặc READ_MEDIA_VIDEO).
+            searchEditText.setText("");
+            performSearch(""); // Đảm bảo làm mới danh sách khi ẩn thanh tìm kiếm
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+            }
+        } else {
+            // Đang ẩn thanh tìm kiếm -> Hiển thị lên
+            searchEditText.setVisibility(View.VISIBLE);
+            btnBackFromSearch.setVisibility(View.VISIBLE);
+            toolbarTitle.setVisibility(View.GONE);
+            rightButtonsContainer.setVisibility(View.GONE); // Ẩn container nút bên phải
+
+            searchEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+    }
+
+    private void performSearch(String query) {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        if (currentFragment instanceof OneFragment) {
+            ((OneFragment) currentFragment).filterVideos(query);
+        } else {
+            Toast.makeText(this, "Chức năng tìm kiếm chỉ khả dụng trên tab Video.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showSortOptionsBottomSheet() {
+        SortOptionsBottomSheet sortOptionsBottomSheet = new SortOptionsBottomSheet();
+        sortOptionsBottomSheet.setSortOptionListener(this);
+        sortOptionsBottomSheet.show(getSupportFragmentManager(), sortOptionsBottomSheet.getTag());
+    }
+
+    @Override
+    public void onSortOptionSelected(SortOptionsBottomSheet.SortOption sortOption) {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        if (currentFragment instanceof OneFragment) {
+            ((OneFragment) currentFragment).sortVideos(sortOption);
+        } else {
+            Toast.makeText(this, "Chức năng sắp xếp chỉ khả dụng trên tab Video.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void checkAndRequestPermissions() {
         String permission;
-        // Chọn quyền phù hợp dựa trên phiên bản Android
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 (API 33) trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permission = Manifest.permission.READ_MEDIA_VIDEO;
-        } else { // Android 12 (API 32) trở xuống
+        } else {
             permission = Manifest.permission.READ_EXTERNAL_STORAGE;
         }
 
-        // Kiểm tra xem quyền đã được cấp chưa
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            // Nếu chưa, yêu cầu quyền từ người dùng
             ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_REQUEST_CODE);
         } else {
-            // Nếu quyền đã được cấp, bạn có thể thông báo cho Fragment One để tải video
-            // Hoặc Fragment One có thể tự kiểm tra quyền khi nó được tạo ra.
-            // Trong demo này, OneFragment sẽ tự động kiểm tra và tải khi onCreateView được gọi.
             Toast.makeText(this, "Quyền truy cập bộ nhớ đã được cấp.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Xử lý kết quả yêu cầu quyền từ người dùng.
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Quyền được cấp
                 Toast.makeText(this, "Quyền truy cập bộ nhớ được cấp!", Toast.LENGTH_SHORT).show();
-                // Không cần làm gì thêm ở đây, OneFragment sẽ tự tải video khi nó khởi tạo.
             } else {
-                // Quyền bị từ chối
                 Toast.makeText(this, "Quyền truy cập bộ nhớ bị từ chối. Không thể hiển thị video.", Toast.LENGTH_LONG).show();
             }
         }

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
 
     private final Context context;
-    private final List<VideoFile> videoList;
+    private final List<VideoFile> videoList; // Danh sách này sẽ là filteredVideoList từ OneFragment
     private final FragmentManager fragmentManager;
 
     public VideoAdapter(Context context, List<VideoFile> videoList, FragmentManager fragmentManager) {
@@ -41,39 +41,33 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         VideoFile video = videoList.get(position);
+
         holder.videoTitle.setText(video.getTitle());
         holder.videoDuration.setText(formatDuration(video.getDuration()));
-        // Gán thời gian tạo cho TextView mới
-        holder.videoCreationTime.setText("Ngày tạo: " + video.getCreationTime());
+        holder.videoCreationTime.setText(video.getCreationTime()); // Hiển thị thời gian tạo
 
-
+        // Load thumbnail video bằng Glide
         Glide.with(context)
                 .load(video.getUri())
-                .placeholder(R.drawable.ic_launcher_background) // Thay thế bằng placeholder phù hợp
-                .error(R.drawable.ic_launcher_foreground)     // Thay thế bằng ảnh lỗi phù hợp
-                .centerCrop()
                 .into(holder.videoThumbnail);
 
-        // Xử lý sự kiện click ngắn (phát video)
         holder.itemView.setOnClickListener(v -> {
-            Toast.makeText(context, "Phát video: " + video.getTitle(), Toast.LENGTH_SHORT).show();
+            // Mở VideoPlayerActivity khi click vào item
             Intent intent = new Intent(context, VideoPlayerActivity.class);
-            intent.setData(video.getUri());
+            intent.setData(video.getUri()); // Truyền URI của video
             context.startActivity(intent);
         });
 
-        // Xử lý sự kiện click dài (long click)
         holder.itemView.setOnLongClickListener(v -> {
-            Toast.makeText(context, "Giữ video: " + video.getTitle(), Toast.LENGTH_SHORT).show();
-
-            // Hiển thị BottomSheetDialogFragment với các tùy chọn
-            // Sử dụng VideoOptionsBottomSheet mới của bạn
+            // Hiển thị BottomSheet Options khi long click
             VideoOptionsBottomSheet bottomSheet = VideoOptionsBottomSheet.newInstance(video.getTitle(), video.getUri());
-            bottomSheet.show(fragmentManager, bottomSheet.getTag()); // Đảm bảo fragmentManager đã được truyền đúng cách
-
-            return true; // Trả về true để tiêu thụ sự kiện long click
-        }
-        );
+            if (fragmentManager != null) {
+                bottomSheet.show(fragmentManager, VideoOptionsBottomSheet.TAG);
+            } else {
+                Toast.makeText(context, "Lỗi: FragmentManager không khả dụng.", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
 
     }
 
@@ -93,8 +87,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             videoThumbnail = itemView.findViewById(R.id.videoThumbnail);
             videoTitle = itemView.findViewById(R.id.videoTitle);
             videoDuration = itemView.findViewById(R.id.videoDuration);
-            videoCreationTime = itemView.findViewById(R.id.videoCreationTime); // <-- Ánh xạ ID
-
+            videoCreationTime = itemView.findViewById(R.id.videoCreationTime); // <-- Ánh xạ ID của TextView mới trong item_video.xml
         }
     }
 

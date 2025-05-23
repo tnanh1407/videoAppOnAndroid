@@ -61,7 +61,7 @@ public class VideoFile {
         this.uri = uri;
     }
 
-    public void setCreationTime(String creationTime) { // Thêm setter cho thời gian tạo
+    public void setCreationTime(String creationTime) {
         this.creationTime = creationTime;
     }
 }
