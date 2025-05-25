@@ -70,4 +70,10 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
 
+    implementation ("androidx.recyclerview:recyclerview:1.2.1") // Hoặc phiên bản mới nhất
+    implementation ("androidx.cardview:cardview:1.0.0") // Hoặc phiên bản mới nhất
+    implementation ("androidx.fragment:fragment:1.3.6") // Hoặc phiên bản mới nhất
+
+    implementation ("com.google.android.material:material:1.x.x")
+
 }

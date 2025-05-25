@@ -16,7 +16,7 @@
         android:gravity="center_vertical">
         <ImageView
             android:id="@+id/videoThumbnail"
-            android:layout_width="80dp"
+            android:layout_width="120dp"
             android:layout_height="80dp"
             android:contentDescription="@string/day_l_thumnail_video"
             android:scaleType="centerCrop"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ten_video_rat_dai_co_the_bi_cat_bot_o_cuoi_dong"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="@color/primary_text_color"
             android:maxLines="2"
