@@ -14,8 +14,20 @@
         android:layout_height="?attr/actionBarSize"
         android:background="#000000">
 
+        <ImageButton
+            android:id="@+id/btnBackFromSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_huy_bo"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:contentDescription="@string/back_button_description"
+            app:tint="#FFFFFF" />
+
         <TextView
-            android:id="@+id/toolbar_title" android:layout_width="wrap_content"
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tr_nh_ph_t_video"
             android:textColor="#FFFFFF"
@@ -25,35 +37,39 @@
             app:drawableTint="#FF0000" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/right_buttons_container" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/btn_sort" android:layout_width="wrap_content"
+                android:id="@+id/btn_sort"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:src="@drawable/icon_sap_xep"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/menu"
+                android:contentDescription="@string/sort_button_description"
                 app:tint="#FFFFFF" />
 
             <ImageButton
-                android:id="@+id/btn_search" android:layout_width="wrap_content"
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_search"
+                android:src="@drawable/icon_tim_kiem"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/search"
+                android:contentDescription="@string/search_button_description"
                 android:layout_marginStart="16dp"
                 app:tint="#FFFFFF" />
 
             <ImageButton
-                android:id="@+id/btn_settings" android:layout_width="wrap_content"
+                android:id="@+id/btn_settings"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_account_box_32"
+                android:src="@drawable/icon_cai_dat"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/settings"
+                android:contentDescription="@string/settings_button_description"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:tint="#C0C0C0" />
         </LinearLayout>
 
