@@ -95,7 +95,6 @@ public class VideoOptionsBottomSheet extends BottomSheetDialogFragment {
 
         LinearLayout optionShare = view.findViewById(R.id.optionShare);
         LinearLayout optionAddTo = view.findViewById(R.id.optionAddTo);
-        LinearLayout optionFavorite = view.findViewById(R.id.optionLock);
         LinearLayout optionDelete = view.findViewById(R.id.optionDelete);
 
         optionShare.setOnClickListener(v -> {
@@ -105,11 +104,6 @@ public class VideoOptionsBottomSheet extends BottomSheetDialogFragment {
 
         optionAddTo.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Chức năng 'Thêm vào danh sách phát' đang được phát triển.", Toast.LENGTH_SHORT).show();
-            dismiss();
-        });
-
-        optionFavorite.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Đã thêm video vào mục yêu thích.", Toast.LENGTH_SHORT).show();
             dismiss();
         });
 

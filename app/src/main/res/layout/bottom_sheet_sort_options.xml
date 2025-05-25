@@ -5,12 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/black"> <TextView
+    android:background="@android:color/white">
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bottom_sheet_grabber"
+        android:backgroundTint="@color/black"/>
+    <TextView
+        android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Sắp xếp video theo"
-    android:textColor="@android:color/white"
-    android:textSize="18sp"
+    android:textColor="@android:color/black"
+    android:textSize="24sp"
     android:textStyle="bold"
     android:paddingBottom="16dp" />
 
@@ -31,13 +41,13 @@
             android:src="@drawable/baseline_add_24"
             android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo ngày sớm nhất"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo ngày sớm nhất"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -58,13 +68,13 @@
             android:src="@drawable/baseline_add_24"
             android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo ngày muộn nhất"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo ngày muộn nhất"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -84,13 +94,13 @@
             android:layout_height="24dp"
             android:src="@drawable/baseline_add_24"  android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo tên A-Z"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo tên (A-Z)"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -110,13 +120,13 @@
             android:layout_height="24dp"
             android:src="@drawable/baseline_add_24"  android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo tên Z-A"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo tên (Z-A)"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -136,13 +146,13 @@
             android:layout_height="24dp"
             android:src="@drawable/baseline_add_24"  android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo thời lượng tăng dần"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo thời lượng (tăng dần)"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -162,13 +172,13 @@
             android:layout_height="24dp"
             android:src="@drawable/baseline_add_24"  android:layout_marginEnd="16dp"
             android:contentDescription="Sắp xếp theo thời lượng giảm dần"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sắp xếp theo thời lượng (giảm dần)"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
     </LinearLayout>
 
